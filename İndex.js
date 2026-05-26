@@ -1,4 +1,15 @@
-import axios from "axios";
+import express from "express";
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("SinyalVar çalışıyor");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server ${PORT} portunda çalışıyor`);
+});import axios from "axios";
 import { EMA } from "technicalindicators";
 
 const BOT_TOKEN = "8864946380:AAH-T9JYLNYNXBlAXXMU-jL3EIOw2FiG9xQ";
