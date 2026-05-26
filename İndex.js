@@ -1,4 +1,6 @@
 import express from "express";
+import axios from "axios";
+import { EMA } from "technicalindicators";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,8 +11,7 @@ app.get("/", (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server ${PORT} portunda çalışıyor`);
-});import axios from "axios";
-import { EMA } from "technicalindicators";
+});
 
 const BOT_TOKEN = "8864946380:AAH-T9JYLNYNXBlAXXMU-jL3EIOw2FiG9xQ";
 const CHAT_ID = "1544983039";
@@ -40,7 +41,9 @@ async function checkSignals() {
         `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=15m&limit=50`
       );
 
-      const closes = response.data.map(candle => parseFloat(candle[4]));
+      const closes = response.data.map(candle =>
+        parseFloat(candle[4])
+      );
 
       const ema8 = EMA.calculate({
         period: 8,
@@ -60,19 +63,20 @@ async function checkSignals() {
 
       if (prevEMA8 < prevEMA21 && lastEMA8 > lastEMA21) {
         await sendTelegramMessage(
-          `🚀 AL Sinyali: ${symbol}\nEMA 8, EMA 21 üzerine çıktı`
+          `🚀 AL Sinyali: ${symbol}`
         );
       }
 
       if (prevEMA8 > prevEMA21 && lastEMA8 < lastEMA21) {
         await sendTelegramMessage(
-          `📉 SAT Sinyali: ${symbol}\nEMA 8, EMA 21 altına düştü`
+          `📉 SAT Sinyali: ${symbol}`
         );
       }
 
       console.log(`${symbol} kontrol edildi`);
     } catch (error) {
       console.log(`Hata: ${symbol}`);
+      console.log(error.message);
     }
   }
 }
